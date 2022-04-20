@@ -41,6 +41,7 @@ class NoteElementDOM {
   static content = document.getElementById("note-content");
   static select = document.getElementById("type-category");
   static updateBtn = document.querySelector(".note-btn-edit");
+  static summaryListContainer = document.querySelector(".summary-notes-list");
 
   static makeDisabled(element, flag) {
     document.querySelector(element).disabled = flag;
@@ -57,15 +58,14 @@ class NoteDate {
       return new Date().toLocaleDateString("en-us", {
         year: "numeric",
         month: "short",
-        day: "numeric"
+        day: "numeric",
       });
     }
-
 
     return new Date(date).toLocaleDateString("en-us", {
       year: "numeric",
       month: "short",
-      day: "numeric"
+      day: "numeric",
     });
   }
 
@@ -91,6 +91,7 @@ class Note {
     this.content = content;
     this.archive = archive;
     this.editNote = undefined;
+    this.setArchive = this.setArchive.bind(this);
   }
 
   setTitle(title) {
@@ -109,6 +110,10 @@ class Note {
     this.content = content;
   }
 
+  setArchive() {
+    this.archive = true;
+  };
+
   htmlNoteTemplate() {
     return `<div class="notes-present todo-note" id=${this.id}>
     <div class="icon">
@@ -120,7 +125,7 @@ class Note {
     <div class="content">${this.content}</div>
     <div class="icons">
       <i class="edit-note fa fa-pencil" aria-hidden="true"></i>
-      <i id="archive-note" class="fa fa-arrow-circle-down" aria-hidden="true"></i>
+      <i class="archive-note fa fa-arrow-circle-down" aria-hidden="true"></i>
       <i class="delete-note fa fa-trash" aria-hidden="true"></i>
     </div>
   </div>`;
@@ -154,7 +159,7 @@ class Note {
     const content = NoteElementDOM.content.value;
 
     if (Note.#validateInputFields(title, date, content)) return;
-    const id = StorageNote.getLastNote().id;
+    const id = StorageNote.getLastNoteId();
     const note = new Note(id + 1, title, date, category, content, false);
     StorageNote.addNote(note);
 
@@ -179,14 +184,11 @@ class Note {
         this.editNote = StorageNote.notes.find((note) => note.id === noteId);
 
         this.#recentEntries(this.editNote);
-
-        console.log("edit work!");
       });
     }
   }
 
   static update() {
-    console.log("Work Update");
     const category = categories[NoteElementDOM.select.selectedIndex];
     const title = NoteElementDOM.title.value;
     const date = NoteElementDOM.date.value;
@@ -212,6 +214,60 @@ class Note {
     NoteElementDOM.date.value = NoteDate.formatForUI(note.created);
     NoteElementDOM.select.value = note.category.option;
     NoteElementDOM.content.value = note.content;
+  }
+
+  static unArchive() {
+    const archiveBtn = document.querySelectorAll(".archive-note");
+
+    for (let i = 0; i < archiveBtn.length; i++) {
+      archiveBtn[i].addEventListener("click", () => {
+        const noteElement = archiveBtn[i].parentNode.parentNode;
+        const noteId = parseInt(noteElement.id);
+        const note = StorageNote.notes.find((note) => note.id === noteId);
+        RenderNote.hideElement(noteElement);
+
+        note.setArchive();
+
+        let archiveArr = StorageNote.notes.filter((note) => note.archive === true);
+        let unArchive = StorageNote.notes.filter((note) => note.archive === false);
+
+        const archives = this.#calcOfSummaryData(archiveArr);
+        const actives = this.#calcOfSummaryData(unArchive);
+
+        console.log("Archive: ", archives, "Active: ", actives);
+
+        let html = ``;
+        for (let key in archives) {
+          let active = actives[key] ?? 0;
+          html += this.#summaryInfoTemplate(key, active, archives[key]);
+        }
+
+        RenderNote.displaySummaryTable(html);
+      });
+    }
+  }
+
+  static #calcOfSummaryData(arr) {
+    const summary = {};
+    for (let i = 0; i < arr.length; i++) {
+      categories.forEach((category) => {
+        if (category.type === arr[i].category.type) {
+          summary[category.type] = summary[category.type] ? ++summary[category.type] : 1;
+        }
+      });
+    }
+
+    return summary;
+  }
+
+  static #summaryInfoTemplate(type, active, archive) {
+    return `<div class="notes-present todo-note todo-note--bg" id="${type}">
+        <div class="icon">
+        </div>
+        <div class="category">${type}</div>
+        <div class="category-active">${active}</div>
+        <div class="category-archived">${archive}</div>
+      </div>`;
   }
 }
 
@@ -240,8 +296,8 @@ class StorageNote {
     return this.notes;
   }
 
-  static getLastNote() {
-    return this.notes.length === 0 ? 0 : this.notes[this.notes.length - 1];
+  static getLastNoteId() {
+    return this.notes.length ? this.notes[this.notes.length - 1].id : 0;
   }
 
   static deleteNote(noteId) {
@@ -267,6 +323,16 @@ class RenderNote {
     RenderNote.insertToDOM(html, "afterbegin", NoteElementDOM.listContainer);
   }
 
+  static hideElement(element) {
+    element.style.display = "none";
+  }
+
+  static displaySummaryTable(html) {
+    if (NoteElementDOM.summaryListContainer.childElementCount)
+      NoteElementDOM.summaryListContainer.innerHTML = "";
+    RenderNote.insertToDOM(html, "afterbegin", NoteElementDOM.summaryListContainer);
+  }
+
   static insertToDOM(html, methodInsert, element) {
     element.insertAdjacentHTML(methodInsert, html);
   }
@@ -277,6 +343,10 @@ class RenderNote {
 
   listenEditNoteEvents() {
     Note.edit();
+  }
+
+  listenUnArchiveEvent() {
+    Note.unArchive();
   }
 
   updateNote() {
@@ -294,6 +364,7 @@ class RenderNote {
       Note.add();
       this.listenDeleteNoteEvents();
       this.listenEditNoteEvents();
+      this.listenUnArchiveEvent();
     });
   }
 
@@ -316,3 +387,4 @@ renderNote.toggleNoteForm();
 renderNote.listenAddToNoteEvent();
 renderNote.listenEditNoteEvents();
 renderNote.updateNote();
+renderNote.listenUnArchiveEvent();
