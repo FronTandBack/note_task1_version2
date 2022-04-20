@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Js Task 1 version 2</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="notes add-notes">
+        <div class="notes-present">
+          <div class="name">Name</div>
+          <div class="created">Created</div>
+          <div class="category">Category</div>
+          <div class="content">Content</div>
+          <div class="dates">Dates</div>
+          <div class="icons">
+            <i class="fa fa-arrow-circle-down" aria-hidden="true"></i>
+            <i class="fa fa-trash" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+      <button class="btn create-note">Create Note</button>
+    </div>
+
+    <div class="container">
+      <div class="note-form">
+        <input
+          type="text"
+          id="note-title-input"
+          placeholder="Title"
+          class="title-input mg-bottom"
+        />
+        <input type="date" id="note-date-input" placeholder="Date" class="date-input mg-bottom" />
+        <select class="category-select mg-bottom" id="type-category">
+          <option value="0">Task</option>
+          <option value="1">Random Thought</option>
+          <option value="2">Idea</option>
+          <option value="3">Quote</option>
+        </select>
+        <textarea
+          class="content-textarea mg-bottom"
+          id="note-content"
+          cols="30"
+          rows="10"
+        ></textarea>
+        <button class="btn note-btn mg-bottom create-btn" id="add-note-btn">Add Note</button>
+        <button class="btn note-btn note-btn-edit mg-bottom">Edit Note</button>
+      </div>
+      <div class="note-list">
+        <div id="300"></div>
+      </div>
+      <!-- Added static note list -->
+    </div>
+    <div class="container">
+      <div class="notes">
+        <div class="notes-present">
+          <div class="note-category">Note Category</div>
+          <div class="active">Active</div>
+          <div class="archived">Archived</div>
+        </div>
+      </div>
+      <div class="summary-notes-list">
+
+      </div>
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+.container {
+  max-width: 90%;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 0 auto;
+  font-weight: bold;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.notes {
+  margin-bottom: 40px;
+}
+
+.notes-present {
+  display: flex;
+  justify-content: space-between;
+  background-color: dimgray;
+  padding-top: 25px;
+  padding-bottom: 15px;
+  padding-left: 60px;
+  padding-right: 30px;
+  color: white;
+}
+
+.btn {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-weight: bold;
+  margin-bottom: 40px;
+}
+
+.todo-note {
+  background-color: rgb(37, 150, 190);
+  margin-bottom: 20px;
+  font-weight: 400;
+  padding-right: 20px;
+}
+
+
+.title-input,
+.date-input,
+.category-select {
+  padding: 10px 15px;
+}
+
+.content-textarea {
+  padding: 20px 20px;
+}
+
+.note-form {
+  display: none;
+  flex-direction: column;
+}
+
+.note-form--flex {
+  display: flex;
+}
+
+.mg-bottom {
+  margin-bottom: 20px;
+}
+
+
+.fa {
+  font-size: 30px;
+  padding-right: 10px;
+}
+
+.note-btn-edit {
+}
+
+.todo-note--bg {
+  background-color: brown;
+}
+
+
