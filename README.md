@@ -1,0 +1,1 @@
+відкривав open live server розширення vscode 
