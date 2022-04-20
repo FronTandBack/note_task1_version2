@@ -1,4 +1,10 @@
-class Note {
+import StorageNote from "./StorageNote.js";
+import RenderNote from "./RenderNote.js";
+import NoteElementDOM from "./NoteElementDOM.js";
+import NoteDate from "./NoteDate.js";
+
+import { categories } from "./categories.js";
+export default class Note {
   constructor(id, title, created, category, content, archive = false) {
     this.id = id;
     this.title = title;
@@ -90,7 +96,7 @@ class Note {
     const date = NoteDate.getDateForNote(NoteElementDOM.date.value);
     const content = NoteElementDOM.content.value;
 
-    if (Note.#validateInputFields(title, date, content)) return;
+    if (this.#validateInputFields(title, date, content)) return;
     const id = StorageNote.getLastNoteId();
     const note = new Note(id + 1, title, date, category, content, false);
     StorageNote.addNote(note);
@@ -126,7 +132,7 @@ class Note {
     const date = NoteElementDOM.date.value;
     const content = NoteElementDOM.content.value;
 
-    if (Note.#validateInputFields(title, date, content)) return;
+    if (this.#validateInputFields(title, date, content)) return;
     this.editNote.title = title;
     this.editNote.created = date;
     this.editNote.category = category;
